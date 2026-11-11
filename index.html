@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Little Garden – Aventura no Jardim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+
+    <!-- HUD: pontuação, vidas, tempo, nível, fase e botões -->
+    <header class="hud" id="hud">
+      <div class="chip"><small>Pontos</small><strong id="hud-score">0</strong></div>
+      <div class="chip"><small>Vidas</small><strong id="hud-lives" aria-label="Vidas">❤️❤️❤️</strong></div>
+      <div class="chip"><small>Tempo</small><strong id="hud-time">0:00</strong></div>
+      <div class="chip"><small>Nível</small><strong id="hud-level">1</strong></div>
+      <div class="chip"><small>Fase</small><strong id="hud-phase">1</strong></div>
+      <div class="chip shield-chip hidden" id="hud-shield"><small>Proteção</small><strong id="hud-shield-time">0s</strong></div>
+      <div class="hud-buttons">
+        <button class="btn round" id="btn-sound" title="Ligar/desligar som" aria-label="Ligar ou desligar o som">🔊</button>
+        <button class="btn round" id="btn-pause" title="Pausar (P ou ESC)" aria-label="Pausar">⏸</button>
+      </div>
+    </header>
+
+    <!-- Área do jogo -->
+    <div class="stage" id="stage">
+      <canvas id="game" width="800" height="500" aria-label="Área do jogo Little Garden"></canvas>
+      <div id="toasts" aria-live="polite"></div>
+
+      <!-- Tela inicial -->
+      <section class="screen" id="screen-menu">
+        <div class="panel">
+          <div class="logo">
+            <span class="logo-bunny" aria-hidden="true">🐰</span>
+            <h1>Little Garden</h1>
+            <p class="subtitle">Aventura no Jardim</p>
+          </div>
+          <p class="desc">Ajude o coelhinho a explorar o jardim encantado! Colete flores, estrelinhas e morangos, fuja das abelhinhas e sobreviva o máximo que puder.</p>
+          <p class="record">🏆 Recorde: <strong id="menu-record">0</strong></p>
+          <div class="actions">
+            <button class="btn primary" id="btn-play">Jogar</button>
+            <button class="btn" id="btn-how">Como jogar</button>
+          </div>
+          <button class="btn small ghost" id="btn-sound-menu">🔊 Som ligado</button>
+        </div>
+      </section>
+
+      <!-- Como jogar -->
+      <section class="screen hidden" id="screen-how">
+        <div class="panel wide">
+          <h2>Como jogar</h2>
+          <ul class="howto">
+            <li><b>Mover:</b> teclas W A S D ou setas. No celular, use os botões na tela.</li>
+            <li><b>Pausar:</b> tecla P ou ESC (ou o botão ⏸).</li>
+            <li><b>Colete:</b> 🌸 flor = 10 pts · 🍓 morango = 15 pts · ⭐ estrela = 25 pts.</li>
+            <li><b>Proteção:</b> a 🌺 flor especial deixa o coelhinho protegido por alguns segundos.</li>
+            <li><b>Cuidado:</b> 🐝 abelhas voam sem rumo, 🐞 joaninhas perseguem você e 🐛 lagartas atravessam o jardim.</li>
+            <li><b>Vidas:</b> você tem 3. Depois de um tombo, fica invulnerável por um instante.</li>
+            <li><b>Evolução:</b> a cada 15 s o nível sobe (inimigos mais rápidos e frequentes). A cada 30 s o jardim muda de fase.</li>
+            <li><b>Conquistas:</b> colete 10 flores, faça 100 pontos, sobreviva 60 s e use a proteção.</li>
+          </ul>
+          <button class="btn primary" id="btn-how-back">Entendi!</button>
+        </div>
+      </section>
+
+      <!-- Tela de pausa -->
+      <section class="screen hidden" id="screen-pause">
+        <div class="panel">
+          <h2>Jogo pausado</h2>
+          <p class="desc">Respire fundo, o jardim espera por você. 🌿</p>
+          <div class="actions col">
+            <button class="btn primary" id="btn-resume">Continuar</button>
+            <button class="btn" id="btn-restart">Reiniciar</button>
+            <button class="btn" id="btn-pause-menu">Voltar ao menu</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tela de Game Over -->
+      <section class="screen hidden" id="screen-over">
+        <div class="panel">
+          <h2>Fim de jogo</h2>
+          <p class="big-score"><span id="over-score">0</span> <small>pontos</small></p>
+          <p class="record">🏆 Recorde: <strong id="over-record">0</strong></p>
+          <p class="new-record hidden" id="over-new">✨ Novo recorde! ✨</p>
+          <p class="over-stats" id="over-stats"></p>
+          <div class="over-ach hidden" id="over-ach"></div>
+          <div class="actions">
+            <button class="btn primary" id="btn-again">Jogar novamente</button>
+            <button class="btn" id="btn-over-menu">Voltar ao menu</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Controles por toque (aparecem em telas de toque / pequenas) -->
+    <div class="dpad" id="dpad" aria-label="Controles de toque">
+      <button class="pad up" data-dir="up" aria-label="Cima">▲</button>
+      <button class="pad left" data-dir="left" aria-label="Esquerda">◀</button>
+      <button class="pad down" data-dir="down" aria-label="Baixo">▼</button>
+      <button class="pad right" data-dir="right" aria-label="Direita">▶</button>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
