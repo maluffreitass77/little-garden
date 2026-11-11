@@ -465,7 +465,7 @@ function draw() {
   }
   ctx.fillStyle = 'rgba(107,79,110,0.15)';                 // sombrinha
   ctx.beginPath(); ctx.ellipse(p.x, p.y + 22, 16, 5, 0, 0, 7); ctx.fill();
-  drawEmoji('🐰', p.x, p.y, 44, blink ? 0.3 : 1);
+  drawEmoji('🐰', p.x, p.y, 52, blink ? 0.65 : 1);
 
   // textos flutuantes (+10, -1 vida...)
   g.texts.forEach(t => {
