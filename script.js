@@ -455,8 +455,7 @@ function draw() {
     drawEmoji(e.emoji, e.x, e.y, 34 * grow * (0.4 + 0.6 * leave), grow * leave, e.vx > 0);
   });
 
-  // coelhinho (pisca quando invulnerável)
-  const blink = g.invuln > 0 && Math.floor(g.time * 12) % 2 === 0;
+  // coelhinho
   if (g.shield > 0) {
     ctx.strokeStyle = `rgba(255,214,90,${0.6 + 0.3 * Math.sin(g.time * 8)})`;
     ctx.fillStyle = 'rgba(255,242,179,0.45)';
@@ -465,7 +464,7 @@ function draw() {
   }
   ctx.fillStyle = 'rgba(107,79,110,0.15)';                 // sombrinha
   ctx.beginPath(); ctx.ellipse(p.x, p.y + 22, 16, 5, 0, 0, 7); ctx.fill();
-  drawEmoji('🐰', p.x, p.y, 52, blink ? 0.65 : 1);
+  drawEmoji('🐻', p.x, p.y, 52, 1);
 
   // textos flutuantes (+10, -1 vida...)
   g.texts.forEach(t => {
